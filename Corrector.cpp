@@ -21,17 +21,17 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
+#include <chrono>
+#include <iostream>
+
 void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
-    FILE* fp = nullptr, *log = nullptr;
+    FILE* fp = nullptr;
     char buffer[300];
     iNumElementos = 0;
 
-    fopen_s(&log, "log.txt", "w");
-    if (!log) return;
+    auto inicio = std::chrono::high_resolution_clock::now();
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
-        fprintf(log, "Error al abrir el archivo %s\n", szNombre);
-        fclose(log);
         return;
     }
 
@@ -41,13 +41,16 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
             if (iNumElementos >= TAMTOKEN) break;
             strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
             iEstadisticas[iNumElementos++] = 1;
-            fprintf(log, "Palabra añadida: %s\n", token);
             token = strtok(nullptr, " \n\r");
         }
     }
     fclose(fp);
-    fclose(log);
+
+    auto fin = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duracion = fin - inicio;
+    std::cout << "Tiempo de ejecución: " << duracion.count() << " segundos\n";
 }
+
 
 
 
