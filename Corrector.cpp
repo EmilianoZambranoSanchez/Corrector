@@ -21,34 +21,63 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-#include <chrono>
-#include <iostream>
+void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos)
+{
+	FILE* fp = nullptr; 
+	// Puntero 
 
-void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
-    FILE* fp = nullptr;
-    char buffer[300];
-    iNumElementos = 0;
 
-    auto inicio = std::chrono::high_resolution_clock::now();
+	char buffer[300];   
+	// Buffer temporal para leer
+	
+	
+	iNumElementos = 0;  
+	// Contador de elementos inicializado
 
-    if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
-        return;
-    }
 
-    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
-        char* token = strtok(buffer, " \n\r");
-        while (token) {
-            if (iNumElementos >= TAMTOKEN) break;
-            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-            iEstadisticas[iNumElementos++] = 1;
-            token = strtok(nullptr, " \n\r");
-        }
-    }
-    fclose(fp);
+	
+	errno_t err = fopen_s(&fp, szNombre, "r");// Se abre el archivo para leerlo
+	if (err != 0 || fp == nullptr) {
+		return;
+	}
 
-    auto fin = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duracion = fin - inicio;
-    std::cout << "Tiempo de ejecución: " << duracion.count() << " segundos\n";
+
+
+	
+	while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
+		// Leer el archivo línea por línea y se procesa cada palabra
+		
+
+		char* token = strtok(buffer, " \n\r"); 
+		while (token != nullptr) {
+			
+			// Que no ecceda el tamaño
+			if (iNumElementos >= TAMTOKEN) {
+				break;
+			}
+
+			
+			strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+			//Copiar palabra en arreglo
+			
+
+
+			iEstadisticas[iNumElementos] = 1;
+			// Se inicializa la aparicion
+			
+			iNumElementos++;
+			// Incrementar el contador de palabras
+			
+			
+			
+			token = strtok(nullptr, " \n\r");
+		}// Sig token
+	}
+
+
+
+	// Se cierrar el archivo
+	fclose(fp);
 }
 
 
