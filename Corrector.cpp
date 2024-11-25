@@ -31,10 +31,11 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
     }
 
     while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
-        char token[TAMTOKEN];
-        int pos = 0;
-
-       
+        char* token = strtok(buffer, " \n\r");
+        while (token) {
+            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+            iNumElementos++;
+            token = strtok(nullptr, " \n\r");
         }
     }
     fclose(fp);
