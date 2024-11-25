@@ -23,64 +23,7 @@
 ******************************************************************************************************************/
 
 
-void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos)
-{
-	FILE* fp = nullptr; 
-	// Puntero 
 
-
-	char buffer[300];   
-	// Buffer temporal para leer
-	
-	
-	iNumElementos = 0;  
-	// Contador de elementos inicializado
-
-
-	
-	errno_t err = fopen_s(&fp, szNombre, "r");// Se abre el archivo para leerlo
-	if (err != 0 || fp == nullptr) {
-		return;
-	}
-
-
-
-	
-	while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
-		// Leer el archivo línea por línea y se procesa cada palabra
-		
-
-		char* token = strtok(buffer, " \n\r"); 
-		while (token != nullptr) {
-			
-			// Que no ecceda el tamaño
-			if (iNumElementos >= TAMTOKEN) {
-				break;
-			}
-
-			
-			strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-			//Copiar palabra en arreglo
-			
-
-
-			iEstadisticas[iNumElementos] = 1;
-			// Se inicializa la aparicion
-			
-			iNumElementos++;
-			// Incrementar el contador de palabras
-			
-			
-			
-			token = strtok(nullptr, " \n\r");
-		}// Sig token
-	}
-
-
-
-	// Se cierrar el archivo
-	fclose(fp);
-}
 
 /*****************************************************************************************************************
 	ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
