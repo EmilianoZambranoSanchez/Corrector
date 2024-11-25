@@ -21,27 +21,27 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-void Diccionario(char* nombreArchivo, char palabras[][TAMTOKEN], int estadisticas[], int& numElementos) {
-    FILE* archivo = nullptr;
+void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
+    FILE* fp = nullptr;
     char buffer[300];
-    numElementos = 0;
+    iNumElementos = 0;
 
-    if (fopen_s(&archivo, nombreArchivo, "r") != 0 || archivo == nullptr) {
+    if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
         return;
     }
 
-    while (fgets(buffer, sizeof(buffer), archivo) != nullptr) {
+    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
         char* token = strtok(buffer, " \n\r");
-        while (token) {
-            if (numElementos >= TAMTOKEN) break;
-            strcpy_s(palabras[numElementos], TAMTOKEN, token);
-            estadisticas[numElementos++] = 1;
+        int contadorInterno = 0; // Nuevo contador local
+        while (token && contadorInterno < TAMTOKEN) {
+            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+            iEstadisticas[iNumElementos++] = 1;
+            contadorInterno++;
             token = strtok(nullptr, " \n\r");
         }
     }
-    fclose(archivo);
+    fclose(fp);
 }
-
 
 
 
