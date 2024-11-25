@@ -27,22 +27,26 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
     iNumElementos = 0;
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
+        fprintf(stderr, "No se pudo abrir el archivo %s\n", szNombre);
         return;
     }
 
     while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
         char* token = strtok(buffer, " \n\r");
-        int contadorInterno = 0; // Nuevo contador local
-        while (token && contadorInterno < TAMTOKEN) {
+        while (token) {
+            if (iNumElementos >= TAMTOKEN) {
+                fprintf(stderr, "Límite de palabras alcanzado\n");
+                break;
+            }
             strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-            iEstadisticas[iNumElementos++] = 1;
-            contadorInterno++;
+            iEstadisticas[iNumElementos] = 1;
+            fprintf(stdout, "Palabra añadida: %s\n", token);
+            iNumElementos++;
             token = strtok(nullptr, " \n\r");
         }
     }
     fclose(fp);
 }
-
 
 
 /*****************************************************************************************************************
