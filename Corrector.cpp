@@ -21,6 +21,26 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
+void Diccionario(char* nombreArchivo, char palabras[][TAMTOKEN], int estadisticas[], int& numElementos) {
+    FILE* archivo = nullptr;
+    char buffer[300];
+    numElementos = 0;
+
+    if (fopen_s(&archivo, nombreArchivo, "r") != 0 || archivo == nullptr) {
+        return;
+    }
+
+    while (fgets(buffer, sizeof(buffer), archivo) != nullptr) {
+        char* token = strtok(buffer, " \n\r");
+        while (token) {
+            if (numElementos >= TAMTOKEN) break;
+            strcpy_s(palabras[numElementos], TAMTOKEN, token);
+            estadisticas[numElementos++] = 1;
+            token = strtok(nullptr, " \n\r");
+        }
+    }
+    fclose(archivo);
+}
 
 
 
