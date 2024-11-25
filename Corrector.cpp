@@ -23,23 +23,22 @@
 ******************************************************************************************************************/
 void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
     FILE* fp = nullptr;
-    char buffer[1024]; // Tamaño del buffer aumentado
+    char buffer[TAMTOKEN];
     iNumElementos = 0;
 
-    if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
+    if (fopen_s(&fp, szNombre, "rb") != 0 || fp == nullptr) { // Apertura en modo binario
         return;
     }
 
-    while (fread(buffer, 1, sizeof(buffer), fp) > 0) {
-        char* token = strtok(buffer, " \n\r");
-        while (token && iNumElementos < TAMTOKEN) {
-            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-            iEstadisticas[iNumElementos++] = 1;
-            token = strtok(nullptr, " \n\r");
-        }
+    while (fread(buffer, sizeof(char), TAMTOKEN - 1, fp) > 0) {
+        buffer[TAMTOKEN - 1] = '\0'; // Asegurar terminación de cadena
+        strcpy_s(szPalabras[iNumElementos], TAMTOKEN, buffer);
+        iEstadisticas[iNumElementos++] = 1;
+        if (iNumElementos >= TAMTOKEN) break;
     }
     fclose(fp);
 }
+
 /*****************************************************************************************************************
 	ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
 	Regresa las palabras ordenadas por su peso
