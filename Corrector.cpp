@@ -21,20 +21,26 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
+void ProcesarLinea(char* linea, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
+    char* token = strtok(linea, " \n\r");
+    while (token && iNumElementos < TAMTOKEN) {
+        strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+        iEstadisticas[iNumElementos++] = 1;
+        token = strtok(nullptr, " \n\r");
+    }
+}
+
 void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
     FILE* fp = nullptr;
-    char buffer[TAMTOKEN];
+    char buffer[300];
     iNumElementos = 0;
 
-    if (fopen_s(&fp, szNombre, "rb") != 0 || fp == nullptr) { // Apertura en modo binario
+    if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
         return;
     }
 
-    while (fread(buffer, sizeof(char), TAMTOKEN - 1, fp) > 0) {
-        buffer[TAMTOKEN - 1] = '\0'; // Asegurar terminación de cadena
-        strcpy_s(szPalabras[iNumElementos], TAMTOKEN, buffer);
-        iEstadisticas[iNumElementos++] = 1;
-        if (iNumElementos >= TAMTOKEN) break;
+    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
+        ProcesarLinea(buffer, szPalabras, iEstadisticas, iNumElementos);
     }
     fclose(fp);
 }
