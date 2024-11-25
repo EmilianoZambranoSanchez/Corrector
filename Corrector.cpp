@@ -27,23 +27,19 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
     iNumElementos = 0;
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
-        fprintf(stderr, "No se pudo abrir el archivo %s\n", szNombre);
         return;
     }
 
-    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
+    while (fgets(buffer, sizeof(buffer), fp) && iNumElementos < TAMTOKEN) {
         char* token = strtok(buffer, " \n\r");
-        while (token) {
-            if (iNumElementos >= TAMTOKEN) {
-                fprintf(stderr, "Límite de palabras alcanzado\n");
-                break;
-            }
-           
+        while (token && iNumElementos < TAMTOKEN) {
+            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+            iEstadisticas[iNumElementos++] = 1;
+            token = strtok(nullptr, " \n\r");
         }
     }
     fclose(fp);
 }
-
 
 /*****************************************************************************************************************
 	ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
