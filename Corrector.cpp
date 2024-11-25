@@ -34,11 +34,7 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
         char token[TAMTOKEN];
         int pos = 0;
 
-        while (sscanf(buffer + pos, "%s", token) == 1) {
-            if (iNumElementos >= TAMTOKEN) break;
-            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-            iEstadisticas[iNumElementos++] = 1;
-            pos += strlen(token) + 1;
+       
         }
     }
     fclose(fp);
