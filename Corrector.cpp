@@ -21,29 +21,28 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-void ProcesarLinea(char* linea, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
-    char* token = strtok(linea, " \n\r");
-    while (token && iNumElementos < TAMTOKEN) {
-        strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-        iEstadisticas[iNumElementos++] = 1;
-        token = strtok(nullptr, " \n\r");
-    }
-}
+#include <map>
+#include <string>
 
-void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
+void Diccionario(const char* szNombre, std::map<std::string, int>& diccionario) {
     FILE* fp = nullptr;
     char buffer[300];
-    iNumElementos = 0;
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
         return;
     }
 
     while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
-        ProcesarLinea(buffer, szPalabras, iEstadisticas, iNumElementos);
+        char* token = strtok(buffer, " \n\r");
+        while (token) {
+            std::string palabra(token);
+            diccionario[palabra]++; // Incrementar frecuencia
+            token = strtok(nullptr, " \n\r");
+        }
     }
     fclose(fp);
 }
+
 
 /*****************************************************************************************************************
 	ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
