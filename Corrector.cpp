@@ -38,11 +38,7 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
                 fprintf(stderr, "Límite de palabras alcanzado\n");
                 break;
             }
-            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
-            iEstadisticas[iNumElementos] = 1;
-            fprintf(stdout, "Palabra añadida: %s\n", token);
-            iNumElementos++;
-            token = strtok(nullptr, " \n\r");
+           
         }
     }
     fclose(fp);
