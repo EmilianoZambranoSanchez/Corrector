@@ -21,21 +21,18 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-#include <cctype>
-
 void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
     FILE* fp = nullptr;
-    char buffer[300];
+    char buffer[1024]; // Tamaño del buffer aumentado
     iNumElementos = 0;
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
         return;
     }
 
-    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
+    while (fread(buffer, 1, sizeof(buffer), fp) > 0) {
         char* token = strtok(buffer, " \n\r");
-        while (token) {
-            for (char* p = token; *p; ++p) *p = tolower(*p); // Convertir a minúsculas
+        while (token && iNumElementos < TAMTOKEN) {
             strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
             iEstadisticas[iNumElementos++] = 1;
             token = strtok(nullptr, " \n\r");
