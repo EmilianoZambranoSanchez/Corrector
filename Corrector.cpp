@@ -30,17 +30,19 @@ void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
         return;
     }
 
-    while (fgets(buffer, sizeof(buffer), fp) && iNumElementos < TAMTOKEN) {
-        char* token = strtok(buffer, " \n\r");
-        while (token && iNumElementos < TAMTOKEN) {
+    while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
+        char token[TAMTOKEN];
+        int pos = 0;
+
+        while (sscanf(buffer + pos, "%s", token) == 1) {
+            if (iNumElementos >= TAMTOKEN) break;
             strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
             iEstadisticas[iNumElementos++] = 1;
-            token = strtok(nullptr, " \n\r");
+            pos += strlen(token) + 1;
         }
     }
     fclose(fp);
 }
-
 /*****************************************************************************************************************
 	ListaCandidatas: Esta funcion recupera desde el diccionario las palabras validas y su peso
 	Regresa las palabras ordenadas por su peso
