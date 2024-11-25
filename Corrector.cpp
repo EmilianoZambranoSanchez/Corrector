@@ -21,27 +21,34 @@
 	int		iEstadisticas[]			:	Arreglo con el numero de veces que aparecen las palabras en el diccionario
 	int &	iNumElementos			:	Numero de elementos en el diccionario
 ******************************************************************************************************************/
-#include <map>
-#include <string>
-
-void Diccionario(const char* szNombre, std::map<std::string, int>& diccionario) {
-    FILE* fp = nullptr;
+void Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[], int& iNumElementos) {
+    FILE* fp = nullptr, *log = nullptr;
     char buffer[300];
+    iNumElementos = 0;
+
+    fopen_s(&log, "log.txt", "w");
+    if (!log) return;
 
     if (fopen_s(&fp, szNombre, "r") != 0 || fp == nullptr) {
+        fprintf(log, "Error al abrir el archivo %s\n", szNombre);
+        fclose(log);
         return;
     }
 
     while (fgets(buffer, sizeof(buffer), fp) != nullptr) {
         char* token = strtok(buffer, " \n\r");
         while (token) {
-            std::string palabra(token);
-            diccionario[palabra]++; // Incrementar frecuencia
+            if (iNumElementos >= TAMTOKEN) break;
+            strcpy_s(szPalabras[iNumElementos], TAMTOKEN, token);
+            iEstadisticas[iNumElementos++] = 1;
+            fprintf(log, "Palabra añadida: %s\n", token);
             token = strtok(nullptr, " \n\r");
         }
     }
     fclose(fp);
+    fclose(log);
 }
+
 
 
 /*****************************************************************************************************************
